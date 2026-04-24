@@ -1,0 +1,131 @@
+type http_request_result = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type http_header = 
+ record {
+   name: text;
+   value: text;
+ };
+type _ImmutableObjectStorageRefillResult = 
+ record {
+   success: opt bool;
+   topped_up_amount: opt nat;
+ };
+type _ImmutableObjectStorageRefillInformation = record {
+                                                  proposed_top_up_amount:
+                                                   opt nat;};
+type _ImmutableObjectStorageCreateCertificateResult = 
+ record {
+   blob_hash: text;
+   method: text;
+ };
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserId = principal;
+type TransformationOutput = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type TransformationInput = 
+ record {
+   context: blob;
+   response: http_request_result;
+ };
+type Timestamp = int;
+type MessageKind = 
+ variant {
+   aiImage: ExternalBlob;
+   aiText: text;
+   fileAttachment: FileAttachmentMeta;
+   userText: text;
+ };
+type MessageId = nat;
+type Message = 
+ record {
+   conversationId: ConversationId;
+   createdAt: Timestamp;
+   id: MessageId;
+   kind: MessageKind;
+ };
+type ListConversationsResponse = 
+ record {
+   conversations: vec ConversationPreview;
+   total: nat;
+ };
+type ListConversationsRequest = 
+ record {
+   limit: nat;
+   offset: nat;
+ };
+type ImageGenResponse = 
+ record {
+   messageId: MessageId;
+   rawJson: text;
+ };
+type ImageGenRequest = 
+ record {
+   conversationId: ConversationId;
+   prompt: text;
+ };
+type FileAttachmentMeta = 
+ record {
+   "blob": ExternalBlob;
+   filename: text;
+   mimeType: text;
+ };
+type ExternalBlob = blob;
+type CreateConversationRequest = record {title: text;};
+type ConversationPreview = 
+ record {
+   id: ConversationId;
+   snippet: text;
+   title: text;
+   updatedAt: Timestamp;
+ };
+type ConversationId = nat;
+type Conversation = 
+ record {
+   createdAt: Timestamp;
+   id: ConversationId;
+   owner: UserId;
+   title: text;
+   updatedAt: Timestamp;
+ };
+type AppendMessageRequest = 
+ record {
+   conversationId: ConversationId;
+   kind: MessageKind;
+ };
+service : {
+  _immutableObjectStorageBlobsAreLive: (hashes: vec blob) -> (vec bool) query;
+  _immutableObjectStorageBlobsToDelete: () -> (vec blob) query;
+  _immutableObjectStorageConfirmBlobDeletion: (blobs: vec blob) -> ();
+  _immutableObjectStorageCreateCertificate: (blobHash: text) ->
+   (_ImmutableObjectStorageCreateCertificateResult);
+  _immutableObjectStorageRefillCashier: (refillInformation:
+   opt _ImmutableObjectStorageRefillInformation) ->
+   (_ImmutableObjectStorageRefillResult);
+  _immutableObjectStorageUpdateGatewayPrincipals: () -> ();
+  _initializeAccessControl: () -> ();
+  appendMessage: (req: AppendMessageRequest) -> (Message);
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  createConversation: (req: CreateConversationRequest) -> (Conversation);
+  deleteConversation: (id: ConversationId) -> (bool);
+  generateImage: (req: ImageGenRequest) -> (ImageGenResponse);
+  getCallerUserRole: () -> (UserRole) query;
+  getMessages: (conversationId: ConversationId) -> (vec Message) query;
+  isCallerAdmin: () -> (bool) query;
+  listConversations: (req: ListConversationsRequest) ->
+   (ListConversationsResponse) query;
+  transform: (input: TransformationInput) -> (TransformationOutput) query;
+  transformChat: (input: TransformationInput) -> (TransformationOutput) query;
+}

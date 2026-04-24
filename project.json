@@ -1,0 +1,23 @@
+{
+  "overview": "A full-featured AI chat application with text messaging, image generation, file uploads, conversation history, and user authentication. Features a clean two-column interface with dark mode support.",
+  "features": [
+    "AI text chat with persistent conversation history",
+    "AI image generation from text prompts",
+    "File and photo upload with inline previews",
+    "Internet Identity user login and signup",
+    "Dark mode toggle with remembered preference",
+    "Responsive two-column sidebar + chat layout",
+    "Auto-scrolling chat thread with timestamps",
+    "Toast notifications for errors and confirmations"
+  ],
+  "category": "productivity",
+  "tags": [
+    "ai",
+    "chat",
+    "image-generation",
+    "dark-mode",
+    "file-upload",
+    "internet-identity"
+  ],
+  "last_updated": "2026-04-24T10:27:33.226Z"
+}
